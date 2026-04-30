@@ -91,3 +91,61 @@
 | `yahoo-v1` | README.md、A1.txt |
 | `seednet-v1`（rebase 後） | README.md、A1.txt、A2.txt、A3.txt |
 
+
+
+# 根據文件目前的分支結構，**不行直接用 Rebase 只讓 A2.txt 進入 `yahoo-v1`**，原因與正確做法如下：
+
+---
+
+## 為什麼 Rebase 不適合這個目的
+
+Rebase 的方向是：**把「目前分支」上 unique 的 commit，移植到「目標分支」的最新 commit 之後**。
+
+目前完成文件操作後的歷史圖：
+
+```
+C0(README) → C1(A1.txt)             ← yahoo-v1
+                    ↓
+             C2'(A2.txt) → C3'(A3.txt)   ← seednet-v1
+```
+
+若你切換到 `yahoo-v1` 再 rebase onto `seednet-v1`，結果是：
+- `yahoo-v1` 的 commit（C1）已經在 `seednet-v1` 的歷史裡了（因為之前就是 rebase 在 yahoo-v1 之上）
+- Git 判斷「沒有需要移植的 commit」→ 直接 fast-forward，`yahoo-v1` 會跳到 `seednet-v1` 最頂端
+- 結果 `yahoo-v1` = README + A1 + A2 + A3，**A3.txt 也一起進來了**，無法只取 A2.txt
+
+---
+
+## 正確做法對應需求
+
+| 需求 | 方法 |
+|------|------|
+| 只讓 A2.txt 進入 `yahoo-v1` | **Cherry-pick** |
+| 讓 A2.txt + A3.txt 全部進入 `yahoo-v1` | **Merge** 或 Rebase（fast-forward） |
+
+---
+
+### 方法一：Cherry-pick（只取 A2.txt）
+
+在 SourceTree 操作：
+
+1. 切換到 **`yahoo-v1`** 分支（左側雙擊）
+2. 點選上方 **「History」** 頁籤，找到 `seednet-v1` 的「加入 A2.txt」那筆 commit
+3. **右鍵點選該 commit** → 選擇 **「Cherry Pick...」**
+4. 確認後，只有 A2.txt 的變更會被複製到 `yahoo-v1`
+
+結果：
+```
+C0 → C1(A1.txt) → C2''(A2.txt)   ← yahoo-v1（只有 A2.txt 進來）
+C0 → C1 → C2'(A2.txt) → C3'(A3.txt)   ← seednet-v1（不受影響）
+```
+
+---
+
+### 方法二：Merge（A2 + A3 全部進入）
+
+1. 切換到 **`yahoo-v1`**
+2. 上方工具列點選 **「Merge」**
+3. 選擇 **`seednet-v1`** → 按 **「OK」**
+
+結果 `yahoo-v1` 就包含 README、A1、A2、A3 全部檔案。
