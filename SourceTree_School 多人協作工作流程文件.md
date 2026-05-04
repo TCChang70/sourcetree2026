@@ -14,11 +14,6 @@
 6. [提交 Pull Request（PR）](#6-提交-pull-requestpr)
 7. [Code Review 與 Merge](#7-code-review-與-merge)
 8. [衝突解決（Conflict Resolution）](#8-衝突解決conflict-resolution)
-9. [Hotfix 緊急修復流程](#9-hotfix-緊急修復流程)
-10. [Release 發版流程](#10-release-發版流程)
-11. [標籤管理（Tag）](#11-標籤管理tag)
-12. [常見問題與最佳實踐](#12-常見問題與最佳實踐)
-
 ---
 
 ## 1. 分支策略概覽（Git Flow）
